@@ -1,0 +1,6 @@
+*.pt
+*.jpg
+*.pdf
+image/
+__pycache__/
+train/
