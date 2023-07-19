@@ -20,7 +20,7 @@ class someNet(nn.Module):
         self.deconv2 = DeConvConnectBlock(4 * channels)
         self.deconv3 = DeConvConnectBlock(2 * channels)
         self.deconv4 = DeConvConnectBlock(1 * channels)
-        self.deconv = DeConvBlock(1 * channels, 1, 1, 2, 1)
+        self.deconv = DeConvBlock(1* channels,1,2,2,0)
 
     def forward(self, x):
         x1 = self.conv1(x)

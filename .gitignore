@@ -4,3 +4,4 @@
 image/
 __pycache__/
 train/
+train_log.csv

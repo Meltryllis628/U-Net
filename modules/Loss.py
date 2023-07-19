@@ -1,5 +1,8 @@
-import torch
+
 import torch.nn as nn
+import torch.nn.functional as F
+import torch
+
 
 class CustomLoss(nn.Module):
     def __init__(self):
@@ -46,12 +49,32 @@ class WeightedCrossEntropyLoss(nn.Module):
         super().__init__()
 
     def forward(self, outputs, label):
-        outputs = F.log_softmax(outputs,1)
         n, c, w, h = outputs.shape
         label_sums = torch.sum(torch.sum(label, dim=2), dim=2).unsqueeze(-1).unsqueeze(-1)
         total = w * h
         weight = label_sums / total
         loss = label * outputs
+        
         loss *= weight
-        entire_loss = -torch.sum(loss)/(n*total)
+        
+        entire_loss = torch.sum(loss)/(n*total)
         return entire_loss
+    
+def dice_loss(pred_mask, gt_mask):
+    smooth = 1e-5
+
+    # 将预测掩码和真实标签转换为二进制形式
+    pred_mask = (pred_mask > 0.5).float()
+    gt_mask = (gt_mask > 0.5).float()
+
+    # 计算相交和并集
+    intersection = torch.sum(pred_mask * gt_mask)
+    union = torch.sum(pred_mask) + torch.sum(gt_mask)
+
+    # 计算Dice系数
+    dice_coefficient = (2.0 * intersection + smooth) / (union + smooth)
+
+    # 计算Dice损失
+    loss = 1.0 - dice_coefficient
+
+    return loss
